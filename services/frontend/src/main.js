@@ -9,7 +9,8 @@ import store from './store';
 const app = createApp(App);
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://172.21.69.109:5000/';
+// 로컬이라면 사설 아이피, 운영이라면 공인 아이피 적용
+axios.defaults.baseURL = 'http://192.168.0.1:5000/';
 
 axios.interceptors.response.use(undefined, function (error) {
   if (error) {

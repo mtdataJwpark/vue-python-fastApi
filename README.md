@@ -6,6 +6,11 @@
 --------------------------------------------------------------
 # Vue.js + Python FastAPI + WASM + Docker
 
+### 필수 설치  
+------  
+```sudo apt install docker-compose```  
+```sudo apt install postgresql-client-common```  
+  
 1. docker-compose 버전 수정 및 Dockerfile과 호환을 위한 포트번호 추가
 2. 회원가입, 로그인에서 상당 부분을 수정함  
     추가한 코드 :   
@@ -120,25 +125,32 @@ exec uvicorn src.main:app --reload --host 0.0.0.0 --port 5000
     - 1분단위 테스트(test 용)  
     #* * * * * /data/sstd_backup/sstd_backup.sh >> /data/sstd_backup/sstd_crontab_cron.log 2>&1  
   
-    11) 복원시  
+    11) 복원시  (docker-compose로 하였다면 안해도 되는 부분.)  
     ``` $ psql -U postgres 먼저 계정 생성  ```  
-    | CREATE DATABASE hello_fastapi_dev;  
-    | CREATE USER hello_fastapi WITH ENCRYPTED PASSWORD 'your_password';  
-    | GRANT ALL PRIVILEGES ON DATABASE hello_fastapi_dev TO hello_fastapi;  
-
+    ```CREATE DATABASE hello_fastapi_dev;  
+    CREATE USER hello_fastapi WITH ENCRYPTED PASSWORD 'your_password';  
+    GRANT ALL PRIVILEGES ON DATABASE hello_fastapi_dev TO hello_fastapi;```  
+  
     - 복원하기  
-    | psql -U hello_fastapi -h localhost -p 5433 -d hello_fastapi_dev -f /path/to/your/backup/public_backup_20240505103010.sql
-
-
+    ``` psql -U hello_fastapi -h localhost -p 5433 -d hello_fastapi_dev -f /home/test/vue-python-fastApi/backup/my_web_db_backup/public_backup_20240510090001.sql ```
+    
+  ### 아이피 변경 부분  
+    - 위치 :   /home/test/vue-python-fastApi/services/frontend/src/main.js  
+      
+    ```
+    # 로컬이라면 사설 아이피, 운영이라면 공인 아이피 적용
+    axios.defaults.baseURL = 'http://192.168.0.1:5000/';
+    ```  
+  
 4. python으로 작성한 회원가입 API 로직이 작동하는지 확인해보려면  
     ```
     A : curl -X POST http://127.0.0.1:5000/login -d "username=test&password=1234"
     ```  
-
+  
     ```
     B : curl -X POST http://127.0.0.1:5000/register -H "Content-Type: application/json" -d '{"username":"testuser", "password":"password123", "full_name":"Test User"}'
     ```  
-
+  
 - 터미널 결과 값 :  
     A : ``` {"message":"You've successfully logged in. Welcome back!"} ```  
     B : ``` {"id":100,"username":"testuser","full_name":"Test User","note":[]} ```  

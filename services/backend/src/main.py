@@ -14,9 +14,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://172.21.69.109:8080",  # 추가된 프론트엔드 주소
-    ],
+    allow_origins=["*"],  # 모든 출처를 허용. 운영 서버에서는 실제 도메인을 명시적으로 지정.
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
